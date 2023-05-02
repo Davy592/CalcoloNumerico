@@ -1,30 +1,30 @@
 from numpy import *
 
 
-def scalini(A):
-    n, m = A.shape
+def riduzioneScalini(A):
+    A = copy(A)
+    righe, colonne = shape(A)
     tol = 1e-15
-    i = j = 0
+    j = i = 0
     trovato = True
-    while i < n and j < m and trovato:
-        trovato = False
-        k = j
-        while k < m and not trovato:
+    while i < righe - 1 and trovato:
+        trovato = abs(A[i, j]) > tol
+        while j < colonne and not trovato:
             h = i
-            while h < n and not trovato:
-                if abs(A[h, k]) > tol:
-                    A[[i, h]] = A[[h, i]]
-                    j = k
+            while h < righe and not trovato:
+                if abs(A[h, j]) > tol:
                     trovato = True
+                    j -= 1
+                    A[[h, i]] = A[[i, h]]
                 h += 1
-            k += 1
-        if trovato:
-            for k in range(i + 1, n):
-                A[k] = A[k] - A[i] * (A[k, j] / A[i, j])
-            i += 1
             j += 1
+        if trovato:
+            for k in range(i + 1, righe):
+                A[k] = A[k] - A[i] * (A[k, j] / A[i, j])
+        i += 1
+        j += 1
     return triu(A)
 
 
-print(f"{scalini(array([[1, 2, 3], [0, 1, 2], [0, 0, 1]]))}\n")
-print(scalini(array([[1, -2, -3, 0, 1, 0], [-2, 4, 6, 0, -1, 2], [1, 0, 1, -2, 1, 0], [0, -2, -4, 2, 2, 1]])))
+print(f"{riduzioneScalini(array([[1, 2, 3], [0, 1, 2], [0, 0, 1]]))}\n")
+print(riduzioneScalini(array([[1, -2, -3, 0, 1, 0], [-2, 4, 6, 0, -1, 2], [1, 0, 1, -2, 1, 0], [0, -2, -4, 2, 2, 1]])))
